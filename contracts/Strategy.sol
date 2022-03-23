@@ -21,30 +21,25 @@ interface IUni {
 }
 
 
-
-// Import interfaces for many popular DeFi projects, or add your own!
-//import "../interfaces/<protocol>/<Interface>.sol";
-
 contract Strategy is BaseStrategy {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
 
-    ICurveFi public curvePool;// =  ICurveFi(address(0x4CA9b3063Ec5866A4B82E437059D2C43d1be596F));
+    ICurveFi public curvePool;
     ICurveFi public basePool;
-    ICrvV3 public curveToken;// = ICrvV3(address(0xb19059ebb43466C323583928285a49f558E572Fd));
+    ICrvV3 public curveToken;
 
-    address public constant weth = address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
-    address public constant uniswapRouter = address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+    address internal constant weth = 0x74b23882a30290451A17c44f4F05243b6b58C76d;
+    address internal constant spookyswapRouter = 0xF491e7B69E4244ad4002BC14e878a34207E38c29;
 
-    VaultAPI public yvToken;// = IVaultV1(address(0x46AFc2dfBd1ea0c0760CAD8262A5838e803A37e5));
-    //IERC20Extended public middleToken; // the token between bluechip and curve pool
+    VaultAPI public yvToken;
 
-    uint256 public lastInvest = 0;
-    uint256 public minTimePerInvest;// = 3600;
-    uint256 public maxSingleInvest;// // 2 hbtc per hour default
-    uint256 public slippageProtectionIn;// = 50; //out of 10000. 50 = 0.5%
-    uint256 public slippageProtectionOut;// = 50; //out of 10000. 50 = 0.5%
+    uint256 public lastInvest; // timestamp of last invest
+    uint256 public minTimePerInvest; // min required seconds between investments
+    uint256 public maxSingleInvest; // largest size investment that can occur on adjustPosition
+    uint256 public slippageProtectionIn; // max of 10_000. 50 = 0.5%
+    uint256 public slippageProtectionOut; // max of 10_000. 50 = 0.5%
     uint256 public constant DENOMINATOR = 10_000;
     string internal strategyName;
 
@@ -359,7 +354,7 @@ contract Strategy is BaseStrategy {
         path[0] = weth;
         path[1] = address(want);
 
-        uint256[] memory amounts = IUni(uniswapRouter).getAmountsOut(_amount, path);
+        uint256[] memory amounts = IUni(spookyswapRouter).getAmountsOut(_amount, path);
 
         return amounts[amounts.length - 1];
     }
