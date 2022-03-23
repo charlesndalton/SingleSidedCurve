@@ -30,12 +30,12 @@ contract Strategy is BaseStrategy {
     ICurveFi public basePool;
     ICrvV3 public curveToken;
 
-    address public constant weth = address(0x74b23882a30290451A17c44f4F05243b6b58C76d);
-    address public constant sushiswapRouter = address(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506);
+    address internal constant weth = 0x74b23882a30290451A17c44f4F05243b6b58C76d;
+    address internal constant spookyswapRouter = 0xF491e7B69E4244ad4002BC14e878a34207E38c29;
 
     VaultAPI public yvToken;
 
-    uint256 public lastInvest = 0; // timestamp of last invest
+    uint256 public lastInvest; // timestamp of last invest
     uint256 public minTimePerInvest; // min required seconds between investments
     uint256 public maxSingleInvest; // largest size investment that can occur on adjustPosition
     uint256 public slippageProtectionIn; // max of 10_000. 50 = 0.5%
@@ -354,7 +354,7 @@ contract Strategy is BaseStrategy {
         path[0] = weth;
         path[1] = address(want);
 
-        uint256[] memory amounts = IUni(sushiswapRouter).getAmountsOut(_amount, path);
+        uint256[] memory amounts = IUni(spookyswapRouter).getAmountsOut(_amount, path);
 
         return amounts[amounts.length - 1];
     }
